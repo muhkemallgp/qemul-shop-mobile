@@ -1,3 +1,157 @@
+# TUGAS 9 PBP
+## A. Pengambilan Data JSON Tanpa Membuat Model Terlebih Dahulu:
+Ya, kita dapat melakukan pengambilan data JSON tanpa membuat model terlebih dahulu. Pengambilan data JSON dapat dilakukan menggunakan metode seperti http.get dalam Flutter untuk mengambil data dari API. Namun, menggunakan model seringkali disarankan untuk mempermudah pengelolaan dan parsing data.
+
+## B. Kelebihan dan Kekurangan Penggunaan Model:
+- Kelebihan:
+
+  Struktur yang Terorganisir: Model membantu dalam mengorganisir data dengan cara yang terstruktur.
+  Validasi Data: Model dapat memvalidasi data sebelum digunakan atau disimpan.
+  Kemudahan Pengelolaan Kode: Membuat model memudahkan pembacaan dan pemeliharaan kode.
+
+- Kekurangan:
+
+  Waktu dan Usaha: Membuat model memerlukan waktu dan usaha tambahan.
+  Overhead Jika Sederhana: Untuk aplikasi sederhana, membuat model mungkin terlalu berlebihan.
+
+## C. CookieRequest:
+Dalam konteks ini, Provider dari Flutter digunakan untuk mengelola state dan menyediakan instance CookieRequest (library dari django) ke seluruh aplikasi. Hal ini memudahkan berbagai bagian aplikasi untuk mengakses dan menggunakan instance CookieRequest tersebut tanpa perlu membuatnya ulang.
+
+Jika CookieRequest berisi informasi yang dibutuhkan untuk berinteraksi dengan server Django, misalnya token atau informasi otentikasi lainnya, maka menyediakan instance ini ke seluruh aplikasi memastikan bahwa informasi otentikasi dapat diakses dengan mudah oleh semua bagian aplikasi yang membutuhkannya.
+
+Namun, pastikan bahwa informasi otentikasi atau data sensitif lainnya yang ada di dalam CookieRequest diatur dan disimpan dengan aman, terutama jika diakses dari berbagai bagian aplikasi yang berbeda. Keamanan dan kepatuhan terhadap praktik terbaik keamanan adalah faktor kunci dalam desain aplikasi.
+
+## D.  Mekanisme Pengambilan Data dari JSON ke Flutter:
+1. Kita bikin dulu fungsi-fungsi async di dalam views.py projek django kita.
+
+2. Mengambil Data: Gunakan paket seperti http dan postJson (dipadukan dengan cookies) untuk mengambil data JSON dari API atau endpoint path Json yang sudah dibuat dalam projek django kita.
+
+3. Parsing Data: Gunakan metode seperti json.decode untuk mengubah data JSON menjadi struktur data yang dapat digunakan dalam Flutter, seperti Map atau objek Dart.
+
+## E. Mekanisme Autentikasi antara Flutter dan Django:
+1. Input Data Akun di Flutter: Gunakan formulir atau metode input untuk mengumpulkan informasi akun dari pengguna.
+
+2. Buat fungsi login, register (bonus), dan logout dalam app autheticate baru for flutter.
+
+3. Autentikasi ke Django: Kirim data akun ke backend Django melalui permintaan request.login (cookies + funct login dari package) dan lakukan proses autentikasi di login Django.
+
+4. Dari django mengirimkan data json yang dibutuhkan untuk validasi dan input message dalam flutter yang menandakan bahwa login berhasil atau tidak.
+
+## F. Tampilan Menu setelah Autentikasi
+1. Dari login kita dikasih Json response berupa status, message, dan username dari login django.
+
+2. Dari status kita dapat membuat kondisi-kondisi yang diinginkan base on hasil status. Kita juga dapat menampilkan message dari hasil olahan fungsi login di views.py Django.
+
+3. Lalu menampilkan MyHomepage sebagai tampilan utama menu dengan menyimpan cookies login dan username yang login dalam static variabel class LoginPage.
+
+## G. Widgets Yang DIpakai:
+
+### 1. File `login.dart`:
+
+#### Widgets:
+- **MyApp (StatelessWidget):**
+  - **Fungsi:** Widget utama yang menjalankan aplikasi. Menginisialisasi `CookieRequest` dan menyediakannya menggunakan `Provider`. Menampilkan `MaterialApp` dengan tema dan halaman utama (`LoginPage`).
+
+- **LoginPage (StatefulWidget):**
+  - **Fungsi:** Halaman utama aplikasi yang menangani proses login.
+  - **Controller: ( TextFieldControler )**
+    - `_usernameController`: Controller untuk mengelola input teks dari field username.
+    - `_passwordController`: Controller untuk mengelola input teks dari field password.
+  - **Metode:**
+    - `build`: Membuat antarmuka pengguna untuk halaman login.
+    - `_login`: Metode yang dipanggil saat tombol login ditekan untuk memproses informasi login.
+  - **Widget UI:**
+    - `AppBar`: Panel atas halaman yang berisi judul.
+    - `Container`: Widget utama yang membungkus seluruh antarmuka pengguna dengan dekorasi gradient.
+    - `Stack`: Widget yang menggabungkan beberapa widget di atas satu sama lain.
+    - `Text`: Menampilkan judul halaman login.
+    - `TextField`: Field input untuk username dan password.
+    - `ElevatedButton`: Tombol untuk melakukan login.
+    - `GestureDetector`: Untuk menavigasi ke halaman pendaftaran.
+    - `SnackBar`: Menampilkan pesan setelah login berhasil.
+  
+- **_ItemPage (StatefulWidget):**
+  - **Fungsi:** Menampilkan daftar item.
+  - **Metode:**
+    - `fetchItem`: Mengambil daftar item dari server.
+    - `build`: Membuat antarmuka pengguna untuk halaman item.
+  - **Widget UI:**
+    - `AppBar`: Panel atas halaman yang berisi judul.
+    - `LeftDrawer`: Widget untuk drawer kiri.
+    - `FutureBuilder`: Membangun antarmuka pengguna berdasarkan status future (menampilkan loading jika data masih diambil).
+    - `ListView.builder`: Menampilkan daftar item dengan efek onTap untuk menavigasi ke detail item.
+
+### 3. File `register.dart`:
+
+#### Widgets:
+- **RegisterPage (StatefulWidget):**
+  - **Fungsi:** Halaman pendaftaran akun baru.
+  - **Controller:**
+    - `_formKey`: GlobalKey untuk mengakses dan memvalidasi form.
+  - **Variabel:**
+    - `username`, `password1`, `password2`: Variabel untuk menyimpan nilai input dari form.
+  - **Metode:**
+    - `build`: Membuat antarmuka pengguna untuk halaman pendaftaran.
+    - `_register`: Metode untuk memproses informasi pendaftaran.
+  - **Widget UI:**
+    - `Container`: Widget utama yang membungkus seluruh antarmuka pengguna dengan dekorasi gradient.
+    - `Scaffold`: Berisi halaman utama aplikasi.
+    - `SingleChildScrollView`: Memungkinkan scroll ketika keyboard muncul.
+    - `Form`: Formulir untuk pendaftaran.
+    - `TextFormField`: Field input untuk username dan password.
+    - `TextButton`: Tombol untuk melakukan pendaftaran.
+    - `GestureDetector`: Untuk menavigasi ke halaman login.
+    - `SnackBar`: Menampilkan pesan setelah pendaftaran berhasil atau gagal.
+  
+Semua widget ini bekerja sama untuk menciptakan antarmuka pengguna yang responsif dan berfungsi dengan baik sesuai dengan kebutuhan aplikasi.
+
+## F. Implementasi Checklist:
+### a) Setting Projek Django
+1. Buatlah django-app bernama "authentication" pada project Django.
+Tambahkan "authentication" ke INSTALLED_APPS pada main project settings.py.
+
+2. Install library yang dibutuhkan dengan perintah "pip install django-cors-headers".
+
+3. Tambahkan "corsheaders" ke INSTALLED_APPS pada main project settings.py dan tambahkan "corsheaders.middleware.CorsMiddleware" pada main project settings.py serta tambahkan variabel-variabel pada main project settings.py untuk konfigurasi CORS dan keamanan cookie.
+
+4. Buatlah metode view untuk login, `register (bonus)`, dan logout pada authentication/views.py.
+
+5. Buat file urls.py pada folder authentication dan tambahkan URL routing terhadap fungsi yang sudah dibuat dengan endpoint yang dibutuhkan jangan lupa tambahkan path('auth/', include('authentication.urls')) pada root urls.py.
+
+### b) Setting Projek Flutter
+1. Instal package yang disediakan oleh tim asisten dosen dengan perintah "flutter pub add provider" dan "flutter pub add pbp_django_auth".
+
+2. Modifikasi root widget untuk menyediakan instance CookieRequest ke semua child widgets menggunakan Provider.
+
+3. Buatlah file login.dart dan `register.dart (bonus)` pada folder screens dan isi dengan kode untuk tampilan login dan register.
+
+4. Pada file main.dart, ubah home: MyHomePage() menjadi home: LoginPage().
+
+5. Pada Flutter, hubungkan halaman add_item_form.dart dengan CookieRequest dan ubah perintah onPressed pada button tambah.
+
+6. Membuat file item_list_page.dart yang menampilkan item base on `user login (bonus)` - caranya by kak adit - (passing uname dari static variable di login.dart ke endpoint dan diolah oleh views.py)
+
+7. Membuat file oneitem.dart untuk menampilkan detil item ketika ditap di list item.
+
+7. Pada Flutter, tambahkan potongan kode pada widget Inkwell pada item_card.dart untuk menangani proses logout.
+
+Tampilan LoginPage:
+
+![Alt text](image.png)
+
+Tampilan Register:
+
+![Alt text](image-1.png)
+
+Tampilan List Item:
+
+![Alt text](image-2.png)
+
+Tampilan Detil Item:
+
+![Alt text](image-3.png)
+<br>
+
 # TUGAS 8 PBP
 ## A. Navigator.push vs Navigator.pushReplacement
 Navigator.push() dan Navigator.pushReplacement() digunakan untuk berpindah antar halaman (route) dalam aplikasi Flutter.
@@ -236,7 +390,7 @@ class _AddItemState extends State<AddItemForm> {
 }
 
 ```
-Dengan kode diatas kita dapat menampilkan input form (TextFormField) dan tombol save untuk menampilkan pop up form yang diisi dan penanda validator juga.
+Dengan kode diatas kita dapat menampilkan input form (TextFormField) dan tombol save untuk menampilkan pop up form yang diisi dan kitaanda validator juga.
 
 #### c) Menambahkan drawer ke tampilan menu (Homepage) dan ke AddItem Form Page
 Di `menu.dart` kita menambahkan drawer dalam widget Scaffold (disebelah kiri app bar)

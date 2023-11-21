@@ -63,10 +63,8 @@ class LeftDrawer extends StatelessWidget {
 
             // ketika diklik akan ke list item
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ItemListPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ItemPage()));
             },
           ),
         ],
